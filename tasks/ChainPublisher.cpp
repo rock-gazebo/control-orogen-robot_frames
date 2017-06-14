@@ -101,7 +101,7 @@ bool ChainPublisher::configureHook()
     clear_and_resize_vectors();
 
     //Receive Chains from urdf
-    for(size_t i=0; i<n_defined_chains_; i++){
+    for(int i=0; i<n_defined_chains_; i++){
         std::string root = chain_definitions[i].root_link;
 
         //By entering '__base__' as root or tip link, one could refer to the actual base-link of the robot model
@@ -125,7 +125,7 @@ bool ChainPublisher::configureHook()
     }
 
     //Determine invloved joits, prepare frames storage and solvers
-    for(size_t i=0; i<n_defined_chains_; i++){
+    for(int i=0; i<n_defined_chains_; i++){
         KDL::Chain chain = chains_[i];
         //Determine involved joints for each chain
         for(uint s=0; s<chain.segments.size(); s++){
@@ -191,7 +191,7 @@ void ChainPublisher::updateHook()
     while (_input.read(joint_state_, false) == RTT::NewData){
         int st;
         //Go thourgh chains
-        for(size_t i=0; i<n_defined_chains_; i++){
+        for(int i=0; i<n_defined_chains_; i++){
             KDL::ChainFkSolverPos_recursive* solver = pos_solvers_[i];
 
             //Extract joint array for chain
