@@ -202,6 +202,7 @@ void ChainPublisher::updateHook()
             st = solver->JntToCart(joint_arrays_[i], kdl_frames_[i]);
             if(st < 0){
                 LOG_ERROR_S << "Something went wrong solving forward kineamtics for chain " << chain_names_[i] << std::endl;
+                continue;
             }
 
             //Convert and write to port
