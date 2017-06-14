@@ -1,6 +1,9 @@
 name "robot_frames"
 using_library "robot_frames"
 
+using_library 'orocos_kdl'
+import_types_from 'kdl_parser/RobotModelFormat.hpp' # for the robot model format
+
 import_types_from "robot_framesTypes.hpp"
 
 import_types_from "base"
@@ -33,5 +36,42 @@ task_context "ChainPublisher" do
     dynamic_output_port /\w/, "base/samples/RigidBodyState"
     
     port_driven 'input'
+end
+
+# Computes the transformation from the base to the tip of a kinematic chain
+task_context 'SingleChainPublisher' do
+    needs_configuration
+    
+    # The chain we want to resolve
+    #
+    # By entering '__base__' as root or tip link, one could refer to the actual
+    # base-link of the robot model
+    property "chain", "robot_frames/Chain"
+
+    # Filename or text representation of the robot model
+    #
+    # By default, it is interpreted as a path to a URDF file. If it starts with
+    # an XML tag, it is interpreted instead as a XML text.
+    #
+    # Whether it is a URDF or SDF model is controlled by the robot_model_format
+    # property
+    property "robot_model", "std/string"
+
+    # In which format is robot_model
+    #
+    # Set to ROBOT_MODEL_URDF for URDF and ROBOT_MODEL_SDF for SDF.
+    property "robot_model_format", "kdl_parser/ROBOT_MODEL_FORMAT"
+    
+    # The status of the joints
+    #
+    # Each sample must provide all the joints involved in the requested chain
+    input_port "joints_samples", "/base/samples/Joints"
+
+    # The pose of the tip in the frame of the base
+    output_port 'tip_pose', "base/samples/RigidBodyState"
+    
+    exception_states 'FORWARD_KINEMATICS_FAILED'
+
+    port_driven
 end
 
