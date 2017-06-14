@@ -10,7 +10,7 @@
 #include <kdl/chainfksolverpos_recursive.hpp>
 #include <kdl/jntarray.hpp>
 #include <base/samples/RigidBodyState.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 #include <robot_frames/RobotFrames.hpp>
 
