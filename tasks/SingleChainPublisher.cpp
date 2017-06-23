@@ -122,7 +122,7 @@ void SingleChainPublisher::updateHook()
         //Calculate
         int result = chain_solver_->JntToCart(joints_array_, kdl_frame);
         if(result < 0){
-            LOG_ERROR_S << "Something went wrong solving forward kineamtics for the chain" << endl;
+            LOG_ERROR_S << "Something went wrong solving forward kineamtics for the chain " << chain_solver_->strError(result) << endl;
             exception(FORWARD_KINEMATICS_FAILED);
             return;
         }
