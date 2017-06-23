@@ -70,7 +70,7 @@ task_context 'SingleChainPublisher' do
     # The pose of the tip in the frame of the base
     output_port 'tip_pose', "base/samples/RigidBodyState"
     
-    exception_states 'FORWARD_KINEMATICS_FAILED'
+    exception_states 'FORWARD_KINEMATICS_FAILED', 'JOINT_POSITION_INVALID'
 
     port_driven
 end

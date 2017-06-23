@@ -108,7 +108,12 @@ void SingleChainPublisher::updateHook()
 
     while (_joints_samples.read(joints_samples_, false) == RTT::NewData){
         for(size_t i = 0; i<joints_names_.size(); i++){
+            if (joints_names_[i].empty())
+                continue;
+
             base::JointState js = joints_samples_.getElementByName(joints_names_[i]);
+            if (!js.hasPosition())
+                exception(JOINT_POSITION_INVALID);
             joints_array_(i) = js.position;
         }
 
