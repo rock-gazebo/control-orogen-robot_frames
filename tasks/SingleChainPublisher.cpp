@@ -70,8 +70,11 @@ bool SingleChainPublisher::configureHook()
     for(uint s=0; s<kdl_chain.segments.size(); s++){
         KDL::Segment segment = kdl_chain.segments[s];
 
-        std::string jname = segment.getJoint().getName();
-        joints_names_.push_back(jname);
+        if (segment.getJoint().getType() != KDL::Joint::None)
+        {
+            std::string jname = segment.getJoint().getName();
+            joints_names_.push_back(jname);
+        }
     }
     joints_array_.data.resize(joints_names_.size());
     joints_array_.data.setZero();
