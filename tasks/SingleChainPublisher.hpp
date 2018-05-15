@@ -111,7 +111,7 @@ namespace robot_frames{
         std::vector<std::string> joints_names_;
         base::samples::RigidBodyState output_pose_;
         KDL::JntArray joints_array_;
-        KDL::ChainFkSolverPos* chain_solver_;
+        KDL::Chain chain_;
     };
 }
 
