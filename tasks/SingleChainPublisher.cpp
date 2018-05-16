@@ -12,13 +12,11 @@ using namespace robot_frames;
 
 SingleChainPublisher::SingleChainPublisher(std::string const& name)
     : SingleChainPublisherBase(name)
-    , chain_solver_(NULL)
 {
 }
 
 SingleChainPublisher::SingleChainPublisher(std::string const& name, RTT::ExecutionEngine* engine)
     : SingleChainPublisherBase(name, engine)
-    , chain_solver_(NULL)
 {
 }
 
@@ -57,7 +55,7 @@ bool SingleChainPublisher::configureHook()
     if(tip == "__base__"){
         tip = tree.getRootSegment()->first;
     }
-
+    
     KDL::Chain kdl_chain;
     if (!tree.getChain(root, tip, kdl_chain)) {
         LOG_ERROR("Error extracting chain with root '%s' and tip '%s'.",
@@ -93,9 +91,7 @@ bool SingleChainPublisher::configureHook()
     else{
         output_pose_.targetFrame = chain.root_link_renamed;
     }
-
-    delete chain_solver_;
-    chain_solver_ = new KDL::ChainFkSolverPos_recursive(kdl_chain);
+    this->chain_ = kdl_chain;
     return true;
 }
 bool SingleChainPublisher::startHook()
@@ -120,12 +116,12 @@ void SingleChainPublisher::updateHook()
             joints_array_(i) = js.position;
         }
 
-        KDL::Frame kdl_frame;
-
         //Calculate
-        int result = chain_solver_->JntToCart(joints_array_, kdl_frame);
+        KDL::ChainFkSolverPos_recursive chain_solver(chain_);
+        KDL::Frame kdl_frame;
+        int result = chain_solver.JntToCart(joints_array_, kdl_frame);
         if(result < 0){
-            LOG_ERROR_S << "Something went wrong solving forward kineamtics for the chain " << chain_solver_->strError(result) << endl;
+            LOG_ERROR_S << "Something went wrong solving forward kineamtics for the chain " << chain_solver.strError(result) << endl;
             exception(FORWARD_KINEMATICS_FAILED);
             return;
         }
